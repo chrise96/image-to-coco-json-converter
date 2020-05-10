@@ -8,3 +8,6 @@ The original images and annotations used in this repo are available at: http://m
 
 ## Visual result in Detectron2
 Register the dataset to detectron2, following the [detectron2 custom dataset tutorial](https://detectron2.readthedocs.io/tutorials/datasets.html).
+
+| ![Original](https://github.com/chrise96/image-to-coco-json-converter/blob/master/dataset/train/monge_12.jpg) | ![mask](https://github.com/chrise96/image-to-coco-json-converter/blob/master/dataset/train_mask/monge_12.png)|![COCO](https://github.com/chrise96/image-to-coco-json-converter/blob/master/dataset/removethis/coco.png) |
+|:---:|:---:|:---:|
