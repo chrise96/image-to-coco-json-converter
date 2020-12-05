@@ -34,7 +34,7 @@ def create_sub_mask_annotation(sub_mask):
     # Find contours (boundary lines) around each sub-mask
     # Note: there could be multiple contours if the object
     # is partially occluded. (E.g. an elephant behind a tree)
-    contours = measure.find_contours(sub_mask, 0.5, positive_orientation='low')
+    contours = measure.find_contours(np.array(sub_mask), 0.5, positive_orientation='low')
 
     polygons = []
     segmentations = []
@@ -93,7 +93,7 @@ def create_annotation_format(polygon, segmentation, image_id, category_id, annot
         'segmentation': segmentation,
         'area': area,
         'iscrowd': 0,
-         'image_id': image_id,
+        'image_id': image_id,
         'bbox': bbox,
         'category_id': category_id,
         'id': annotation_id
@@ -103,6 +103,8 @@ def create_annotation_format(polygon, segmentation, image_id, category_id, annot
 
 # Create the annotations of the ECP dataset (Coco format) 
 coco_format = {
+    "info": {},
+    "licenses": [],
     "images": [
         {
         }
