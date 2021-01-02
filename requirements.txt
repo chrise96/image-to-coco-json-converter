@@ -1,0 +1,4 @@
+Pillow==7.2.0
+Shapely==1.7.1
+scikit-image==0.17.2
+numpy==1.18.5
