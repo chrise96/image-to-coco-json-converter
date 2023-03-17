@@ -5,26 +5,18 @@ from shapely.geometry import Polygon, MultiPolygon         # (pip install Shapel
 import os
 import json
 
-def create_sub_masks(mask_image, width, height):
-    # Initialize a dictionary of sub-masks indexed by RGB colors
+
+def create_sub_masks(mask_image, colors):
     sub_masks = {}
-    for x in range(width):
-        for y in range(height):
-            # Get the RGB values of the pixel
-            pixel = mask_image.getpixel((x,y))[:3]
+    for color_str in colors:
+        # convert color_str to color
+        color = tuple(map(int, color_str[1:-1].split(',')))
 
-            # Check to see if we have created a sub-mask...
-            pixel_str = str(pixel)
-            sub_mask = sub_masks.get(pixel_str)
-            if sub_mask is None:
-               # Create a sub-mask (one bit per pixel) and add to the dictionary
-                # Note: we add 1 pixel of padding in each direction
-                # because the contours module doesn"t handle cases
-                # where pixels bleed to the edge of the image
-                sub_masks[pixel_str] = Image.new("1", (width+2, height+2))
+        # get color mask from color
+        im_ary = np.array(mask_image)
+        color_mask = np.logical_and(*[im_ary[:, :, i] == color[i] for i in range(3)])
 
-            # Set the pixel value to 1 (default is 0), accounting for padding
-            sub_masks[pixel_str].putpixel((x+1, y+1), 1)
+        sub_masks[color_str] = np.pad(color_mask, 1)
 
     return sub_masks
 
@@ -51,10 +43,15 @@ def create_sub_mask_annotation(sub_mask):
             # Go to next iteration, dont save empty values in list
             continue
 
-        polygons.append(poly)
-
-        segmentation = np.array(poly.exterior.coords).ravel().tolist()
-        segmentations.append(segmentation)
+        if poly.type == 'MultiPolygon':
+            for p in poly:
+                polygons.append(p)
+                segmentation = np.array(p.exterior.coords).ravel().tolist()
+                segmentations.append(segmentation)
+        else:
+            polygons.append(poly)
+            segmentation = np.array(poly.exterior.coords).ravel().tolist()
+            segmentations.append(segmentation)
     
     return polygons, segmentations
 
